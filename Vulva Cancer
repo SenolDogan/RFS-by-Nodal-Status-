@@ -1,0 +1,35 @@
+# Create a Kaplan-Meier fitter object
+kmf_0 = KaplanMeierFitter()
+kmf_1 = KaplanMeierFitter()
+# Plot the survival function for each nodal status
+plt.figure(figsize=(10, 6))
+# Fit and plot for Nodal Status 0
+kmf_0.fit(durations=df[df['nodal'] == 0]['date_rfs_months'],
+        event_observed=df[df['nodal'] == 0]['event_rfs'],
+        label='Nodal Status 0')
+kmf_0.plot_survival_function(ci_show=True, color='#101E50')
+# Fit and plot for Nodal Status 1
+kmf_1.fit(durations=df[df['nodal'] == 1]['date_rfs_months'],
+        event_observed=df[df['nodal'] == 1]['event_rfs'],
+        label='Nodal Status 1')
+kmf_1.plot_survival_function(ci_show=True, color='#FF6BD6')
+# Limit the x-axis to 60 months
+plt.xlim(0, 60)
+
+# Set y-axis limit to start from 0.4
+plt.ylim(0.4, 1.0)
+
+# Add labels and title
+plt.title('Recurrence-Free Survival (RFS) by Nodal Status')
+plt.xlabel('Time (Months)')
+plt.ylabel('RFS Probability')
+# Add grid
+plt.grid(True)
+
+# Add at risk counts for both Nodal Status 0 and 1
+add_at_risk_counts(kmf_0, kmf_1, ax=plt.gca())
+
+# Save the plot
+plt.tight_layout()
+plt.savefig('/app/static/images/rfs_by_nodal_status_combined_final.png')
+plt.close()
